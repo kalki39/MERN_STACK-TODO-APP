@@ -9,6 +9,7 @@ const userSchema = require("./models/userSchema");
 const { isAuthMiddleware } = require("./middlewares/isAuthMiddleware");
 const validator = require("validator");
 const todoSchema = require("./models/todoSchema");
+const { rateLimiting } = require("./middlewares/rateLimiting");
 // const Product = require("./models/productModel");
 
 //variables
@@ -53,7 +54,7 @@ mongoose
 
 // routes
 app.get("/", (req, res) => {
-  res.send("server");
+  res.render("register");
 });
 
 app.get("/register", (req, res) => {
@@ -97,11 +98,12 @@ app.post("/register", async (req, res) => {
     try {
       const userDb = await user.save();
       console.log(userDb);
-      return res.send({
-        status: 201,
-        message: "User register successfully",
-        data: userDb,
-      });
+      return res.redirect("/login");
+      // return res.send({
+      //   status: 201,
+      //   message: "User register successfully",
+      //   data: userDb,
+      // });
     } catch (error) {
       return res.send({
         status: 500,
@@ -196,20 +198,20 @@ app.post("/login", async (req, res) => {
 app.get("/dashboard", isAuthMiddleware, async (req, res) => {
   //isAuth is a middleware function it check session id in cookies before going to dashboard
   console.log(req.session);
-  const username = req.session.user.username;
-
+  // const username = req.session.user.username;
+  return res.render("dashboard");
   //search all todo list in db of current user using name
-  try {
-    const todos = await todoSchema.find({ username: username }); //it return all toodo in array from db
-    console.log(todos);
-    return res.render("dashboard", { todos: todos }); //todo array pass to dashborad html page to map all todo data
-  } catch (error) {
-    return res.send({
-      status: 500,
-      message: "Database error",
-      error: error,
-    });
-  }
+  // try {
+  //   const todos = await todoSchema.find({ username: username }); //it return all toodo in array from db
+  //   console.log(todos);
+  //   return res.render("dashboard", { todos: todos }); //todo array pass to dashborad html page to map all todo data
+  // } catch (error) {
+  //   return res.send({
+  //     status: 500,
+  //     message: "Database error",
+  //     error: error,
+  //   });
+  // }
 });
 
 //logout
@@ -252,8 +254,9 @@ app.post("/logout_from_all_devices", isAuthMiddleware, async (req, res) => {
 });
 
 //todo's api
-app.post("/create-item", isAuthMiddleware, async (req, res) => {
-  console.log(req.body);
+app.post("/create-item", isAuthMiddleware, rateLimiting, async (req, res) => {
+  //ratelimit is middleware it limit
+  console.log(req.body); // 2 sec to create new todo
 
   const todoText = req.body.todo; ///todo is from user client
 
@@ -395,6 +398,40 @@ app.get("/read-item", async (req, res) => {
       status: 200,
       message: "Read Success",
       data: todos,
+    });
+  } catch (error) {
+    return res.send({
+      status: 500,
+      message: "Database error",
+      error: error,
+    });
+  }
+});
+
+//pagination
+//pagination_dashboard?skip=10
+app.get("/pagination_dashboard", isAuthMiddleware, async (req, res) => {
+  const skip = req.query.skip || 0; //client
+  const LIMIT = 5; //backend
+
+  const user_name = req.session.user.username;
+
+  try {
+    const todos = await todoSchema.aggregate([
+      //match, pagination
+      { $match: { username: user_name } },
+      {
+        $facet: {
+          data: [{ $skip: parseInt(skip) }, { $limit: LIMIT }],
+        },
+      },
+    ]);
+
+    // console.log(todos[0].data);    //it retirn array of data
+    return res.send({
+      status: 200,
+      message: "Read success",
+      data: todos[0].data,
     });
   } catch (error) {
     return res.send({

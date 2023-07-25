@@ -11,7 +11,7 @@
       button {
         background-color: #4caf50;
         width: 100%;
-        color: orange;
+        color: rgb(19, 18, 18);
         padding: 15px;
         margin: 10px 0px;
         border: none;
@@ -49,14 +49,27 @@
     <form action="/register" method="POST">
       <div class="container">
         <label for="name">Name : </label>
-        <input type="text" placeholder="Enter Name" name="name" required />
+        <input
+          type="text"
+          placeholder="Enter Name"
+          name="name"
+          id="name"
+          required
+        />
         <label for="email">Email : </label>
-        <input type="text" placeholder="Enter Email" name="email" required />
+        <input
+          type="text"
+          placeholder="Enter Email"
+          name="email"
+          id="email"
+          required
+        />
         <label for="username">Username : </label>
         <input
           type="text"
           placeholder="Enter Username"
           name="username"
+          id="username"
           required
         />
         <label for="password">Password : </label>
@@ -64,9 +77,10 @@
           type="password"
           placeholder="Enter Password"
           name="password"
+          id="password"
           required
         />
-        <button type="submit">Register</button>
+        <button type="submit" id="register">Register</button>
       </div>
     </form>
   </body>

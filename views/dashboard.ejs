@@ -34,6 +34,8 @@
 
       <ul id="item_list" class="list-group pb-5"></ul>
 
+      <button class="show_more btn btn-warning mb-3">Show More</button>
+
       <form action="/logout" method="POST">
         <button class="mb-3 btn btn-success">Logout</button>
       </form>
@@ -42,9 +44,7 @@
         <button class="mb-3 btn btn-success">Logout from all devices</button>
       </form>
     </div>
-    <!-- <script>
-        let todos = <%- JSON.stringify(todos)%>
-      </script> -->
+
     <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/ejs@3.1.9/ejs.min.js"></script>
     <script src="/browser.js"></script>

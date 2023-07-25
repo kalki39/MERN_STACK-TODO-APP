@@ -11,7 +11,7 @@
       button {
         background-color: #4caf50;
         width: 100%;
-        color: orange;
+        color: rgb(19, 18, 17);
         padding: 15px;
         margin: 10px 0px;
         border: none;
@@ -46,8 +46,8 @@
   </head>
   <body>
     <center><h1>Login Form</h1></center>
-    <form action="/login" method="POST">
-      <div class="container">
+    <div class="container">
+      <form action="/login" method="POST">
         <label for="loginId">Email or Username : </label>
         <input
           type="text"
@@ -63,7 +63,28 @@
           required
         />
         <button type="submit">Login</button>
-      </div>
-    </form>
+      </form>
+      <form action="/register" method="GET">
+        <button>Register</button>
+      </form>
+    </div>
+    <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"></script>
+    <script>
+      // document
+      //   .getElementsByClassName("register")
+      //   .addEventListener("click", () => {
+      //     console.log("okk");
+      //   });
+      // function reg() {
+      //   axios
+      //     .get("/register")
+      //     .then((res) => {
+      //       console.log(res);
+      //     })
+      //     .catch((err) => {
+      //       console.log(err);
+      //     });
+      // }
+    </script>
   </body>
 </html>

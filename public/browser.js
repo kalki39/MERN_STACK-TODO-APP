@@ -1,3 +1,5 @@
+let skip = 0; //for pagination it use in query
+
 document.addEventListener("click", function (event) {
   if (event.target.classList.contains("add_item")) {
     event.preventDefault();
@@ -17,9 +19,11 @@ document.addEventListener("click", function (event) {
         if (res.data.status !== 201) {
           alert(res.data.message);
         }
+
         todoText.value = "";
-        document.getElementById("item_list").innerHTML = "";
-        generateTodos();
+        return;
+        // document.getElementById("item_list").innerHTML = "";
+        // generateTodos();
       })
       .catch((err) => {
         console.log(err);
@@ -68,6 +72,11 @@ document.addEventListener("click", function (event) {
         alert(err);
       });
   }
+
+  if (event.target.classList.contains("show_more")) {
+    //for pagination
+    generateTodos();
+  }
 });
 
 window.onload = function () {
@@ -77,7 +86,7 @@ window.onload = function () {
 function generateTodos() {
   //read the todos
   axios
-    .get("/read-item")
+    .get(`/pagination_dashboard?skip=${skip}`)
     .then((res) => {
       if (res.data.status !== 200) {
         alert(res.data.message);
@@ -99,6 +108,9 @@ function generateTodos() {
           })
           .join("")
       );
+
+      //increment skip by todos length
+      skip += todos.length;
     })
     .catch((err) => {
       console.log(err);
